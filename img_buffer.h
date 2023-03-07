@@ -22,5 +22,6 @@ extern void img_buffer__set_pixel(img_buffer_t* ib, size_t x, size_t y, bool col
 extern void img_buffer__draw_rect(img_buffer_t* ib, size_t topleft_x, size_t topleft_y, size_t size_x, size_t size_y, bool color);
 
 extern void img_buffer__draw_char(img_buffer_t* ib, size_t topleft_x, size_t topleft_y, bool color, char c);
+extern void img_buffer__draw_string(img_buffer_t* ib, size_t topleft_x, size_t topleft_y, bool color, char* s, size_t s_size);
 
 #endif
