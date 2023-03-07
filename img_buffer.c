@@ -3,14 +3,15 @@
 #include <string.h>
 
 
-void img_buffer__init(img_buffer_t* ib, img_buffer_size_t size) {
+void img_buffer__init(img_buffer_t* ib, size_t width, size_t height) {
   assert(
-          size.x % 8 == 0
-      &&  size.y % 8 == 0
+          width % 8 == 0
+      &&  height % 8 == 0
   );
 
-  ib->size = size;
-  ib->buffer_size = (size.x * size.y)/8;
+  ib->width = width;
+  ib->height = height;
+  ib->buffer_size = (width * height)/8;
   ib->buffer = malloc(ib->buffer_size);
 }
 
@@ -24,22 +25,22 @@ uint8_t* img_buffer__get_buff(img_buffer_t* ib) {
 }
 
 
-void img_buffer__set_pixel(img_buffer_t* ib, img_buffer_point_t p, bool color) {
-  const size_t page_index = p.y/8;
-  const size_t page_size = ib->size.x;
-  uint8_t* byte = &ib->buffer[page_index * page_size + p.x];
+void img_buffer__set_pixel(img_buffer_t* ib, size_t x, size_t y, bool color) {
+  const size_t page_index = y/8;
+  const size_t page_size = ib->width;
+  uint8_t* byte = &ib->buffer[page_index * page_size + x];
 
-  const uint8_t mask = 1 << (p.y%8);
+  const uint8_t mask = 1 << (y%8);
   if (color == 0)
     *byte &= ~mask;
   else
     *byte |= mask;
 }
 
-void img_buffer__draw_rect(img_buffer_t* ib, img_buffer_point_t topleft, img_buffer_size_t size) {
+void img_buffer__draw_rect(img_buffer_t* ib, size_t topleft_x, size_t topleft_y, size_t width, size_t height, bool color) {
   assert(
-          topleft.x + size.x < ib->size.x
-      &&  topleft.y + size.y < ib->size.y
+          topleft_x + width < ib->width
+      &&  topleft_y + height < ib->height
   );
 
 #if 0
@@ -53,8 +54,7 @@ void img_buffer__draw_rect(img_buffer_t* ib, img_buffer_point_t topleft, img_buf
   }
 #endif
 
-  img_buffer_point_t p;
-  for (p.x=topleft.x; p.x < topleft.x+size.x; p.x++)
-    for (p.y=topleft.y; p.y < topleft.y+size.y; p.y++)
-      img_buffer__set_pixel(ib, p, 1);
+  for (size_t x=topleft_x; x < topleft_x+width; x++)
+    for (size_t y=topleft_y; y < topleft_y+height; y++)
+      img_buffer__set_pixel(ib, x, y, color);
 }
