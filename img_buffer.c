@@ -83,5 +83,4 @@ void img_buffer__draw_char(img_buffer_t* ib, size_t topleft_x, size_t topleft_y,
 void img_buffer__draw_string(img_buffer_t* ib, size_t topleft_x, size_t topleft_y, bool color, char* s, size_t s_size) {
   for (size_t i=0; i < s_size; i++)
     img_buffer__draw_char(ib, topleft_x+i*8, topleft_y, color, s[i]);
-
 }
