@@ -1,6 +1,8 @@
 #include "img_buffer/img_buffer.h"
+#include "img_buffer/font8x8_basic.h"
 #include <assert.h>
 #include <string.h>
+#include <stdio.h>
 
 
 void img_buffer__init(img_buffer_t* ib, size_t width, size_t height) {
@@ -57,4 +59,23 @@ void img_buffer__draw_rect(img_buffer_t* ib, size_t topleft_x, size_t topleft_y,
   for (size_t x=topleft_x; x < topleft_x+width; x++)
     for (size_t y=topleft_y; y < topleft_y+height; y++)
       img_buffer__set_pixel(ib, x, y, color);
+}
+
+
+void img_buffer__draw_char(img_buffer_t* ib, size_t topleft_x, size_t topleft_y, bool color, char c) {
+  assert(
+          c < 128
+      &&  topleft_x+8 < ib->width
+      &&  topleft_y+8 < ib->height
+  );
+
+  char* bitmap = font8x8_basic[(uint8_t)c];
+
+  for (size_t x=0; x < 8; x++) {
+    for (size_t y=0; y < 8; y++) {
+      const bool is_in_char = (bitmap[y] >> x) & 1;
+      img_buffer__set_pixel(ib, topleft_x+x, topleft_y+y, is_in_char ? color : !color);
+    }
+  }
+
 }
